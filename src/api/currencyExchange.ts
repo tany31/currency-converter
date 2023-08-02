@@ -1,6 +1,6 @@
 import axiosClient from './client'
 import { type Currency } from '@/types/currency'
-const BASE_URL = '/v1'
+const BASE_URL = 'https://api.currencybeacon.com/v1'
 const API_KEY = 'sCgz1CNDkwJvndDqnvMp23g5J9y9Vc10'
 
 type ResponceCurrencyType = {
