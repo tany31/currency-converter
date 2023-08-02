@@ -1,0 +1,14 @@
+@import './base.css';
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+}
