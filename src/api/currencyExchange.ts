@@ -1,13 +1,20 @@
 import axiosClient from './client'
 import { type Currency } from '@/types/currency'
-const BASE_URL = 'https://api.currencybeacon.com/v1'
-const API_KEY = 'sCgz1CNDkwJvndDqnvMp23g5J9y9Vc10'
+const BASE_URL = 'https://api.freecurrencyapi.com/v1'
+const API_KEY = 'fca_live_PkxAHS6EiObaekPza3LPENwG56IwdYxBaAO8828r'
 
 type ResponceCurrencyType = {
   code: string
   name: string
   symbol: string
-  short_code: string
+}
+
+type ResponceCurrencyDataType = {
+  data: Record<string, ResponceCurrencyType>
+}
+
+type ResponceLatestType = {
+  data: Record<string, number>
 }
 
 type ConvertParams = {
@@ -25,30 +32,29 @@ export function getCurrencies(): Promise<Currency[]> {
   return axiosClient
     .get(`${BASE_URL}/currencies/`, {
       params: {
-        api_key: API_KEY
+        apikey: API_KEY
       }
     })
-    .then(({ data }: { data: Record<string, ResponceCurrencyType> }) => {
-      return Object.values(data).map((currency: ResponceCurrencyType) => ({
+    .then(({ data }: { data: ResponceCurrencyDataType }) => {
+      return Object.values(data.data).map((currency: ResponceCurrencyType) => ({
         symbol: currency.symbol,
         name: currency.name,
-        code: currency.short_code
+        code: currency.code
       }))
     })
 }
 
 export function convert({ from, to, amount }: ConvertParams) {
   return axiosClient
-    .get(`${BASE_URL}/convert/`, {
+    .get(`${BASE_URL}/latest/`, {
       params: {
-        api_key: API_KEY,
-        from,
-        to,
-        amount
+        apikey: API_KEY,
+        base_currency: from,
+        currencies: to
       }
     })
     .then(({ data }) => {
-      return data
+      return (data.data[to] * amount).toPrecision(2)
     })
 }
 
@@ -56,12 +62,15 @@ export function latest({ base, symbols = [] }: LatestParams) {
   return axiosClient
     .get(`${BASE_URL}/latest/`, {
       params: {
-        api_key: API_KEY,
-        base,
-        symbols
+        apikey: API_KEY,
+        base_currency: base,
+        currencies: symbols
       }
     })
-    .then(({ data }) => {
-      return data.rates
+    .then(({ data }: { data: ResponceLatestType }) => {
+      return Object.entries(data.data).map(([code, rate]) => ({
+        code,
+        rate: Number(rate.toPrecision(2))
+      }))
     })
 }

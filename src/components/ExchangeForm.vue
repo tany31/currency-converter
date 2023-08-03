@@ -47,8 +47,8 @@ const handleConvert = () => {
   loading.value = true
 
   convert({ from: from.value, to: to.value, amount: Number(amountFrom.value) })
-    .then(({ value }) => {
-      amountTo.value = value.toFixed(2)
+    .then((amount) => {
+      amountTo.value = amount
     })
     .finally(() => {
       loading.value = false

@@ -15,16 +15,12 @@ const loading = ref(false)
 const currencyStore = useCurrencyStore()
 const baseCurrency = computed(() => currencyStore.baseCurrency)
 
-const normalizeRates = (rates: Record<string, number>): Rate[] => {
-  return Object.entries(rates).map(([code, rate]) => ({ code, rate: Number(rate.toFixed(2)) }))
-}
-
 const loadRates = () => {
   loading.value = true
 
   latest({ base: unref(baseCurrency) })
     .then((rates) => {
-      latestRates.value = normalizeRates(rates)
+      latestRates.value = rates
     })
     .finally(() => {
       loading.value = false
