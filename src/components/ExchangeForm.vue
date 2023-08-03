@@ -48,7 +48,7 @@ const handleConvert = () => {
 
   convert({ from: from.value, to: to.value, amount: Number(amountFrom.value) })
     .then((amount) => {
-      amountTo.value = amount
+      amountTo.value = String(amount)
     })
     .finally(() => {
       loading.value = false
