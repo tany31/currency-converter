@@ -1,5 +1,6 @@
 import axiosClient from './client'
 import { type Currency } from '@/types/currency'
+import { roundCurrency } from '@/utils/currency'
 const BASE_URL = 'https://api.freecurrencyapi.com/v1'
 const API_KEY = 'fca_live_PkxAHS6EiObaekPza3LPENwG56IwdYxBaAO8828r'
 
@@ -54,7 +55,8 @@ export function convert({ from, to, amount }: ConvertParams) {
       }
     })
     .then(({ data }) => {
-      return (data.data[to] * amount).toPrecision(2)
+      const convertedAmount = data.data[to] * amount
+      return roundCurrency(convertedAmount)
     })
 }
 
@@ -70,7 +72,7 @@ export function latest({ base, symbols = [] }: LatestParams) {
     .then(({ data }: { data: ResponceLatestType }) => {
       return Object.entries(data.data).map(([code, rate]) => ({
         code,
-        rate: Number(rate.toPrecision(2))
+        rate: roundCurrency(rate)
       }))
     })
 }
